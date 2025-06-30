@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.env
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Nix build artifacts
+result
+.nix-profile
+.nix-channels
+
+# Editor / OS files
+.DS_Store
+*.swp
+
