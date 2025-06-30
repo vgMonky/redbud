@@ -1,0 +1,11 @@
+- init Git and push to new github repo
+
+- @cmd /chat_wipe (cleans the conversation manager)
+- @cmd /chat_range (sets the conversation max_turns)
+- @cmd /chat_print (returns resume of the current conversation memory)
+
+
+- New Instruction class, and InstructionManager
+- @cmd /instruction_new
+- @cmd /instruction_list
+- @cmd /instruction_wipe
