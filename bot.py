@@ -98,13 +98,13 @@ def register_handlers(bot: telebot.TeleBot, ds_client: OpenAI):
         for m in history:
             role = m["role"]
             content = m["content"]
-            formatted.append(f"*{role.upper()}*:\n{content}")
+            formatted.append(f"{role.upper()}:\n{content}")
 
         full_context = header + "\n\n" + "\n\n".join(formatted)
 
         MAX_MSG_LEN = 4000
         for i in range(0, len(full_context), MAX_MSG_LEN):
-            bot.send_message(chat_id, full_context[i:i + MAX_MSG_LEN], parse_mode='Markdown')
+            bot.send_message(chat_id, full_context[i:i + MAX_MSG_LEN], parse_mode=None)
 
     @cmd('chat_range', 'Show the memory range max turns\n/chat_range [<number>] to set it')
     def chat_range(msg):
