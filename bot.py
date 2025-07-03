@@ -64,6 +64,8 @@ def register_handlers(bot: telebot.TeleBot, ds_client: OpenAI):
         history = [SYSTEM_PROMPT] + conv_mgr.get_history(chat_id)
 
         bot.send_chat_action(chat_id, 'typing')
+
+        logging.info(f"[{chat_id}] Prompt: {prompt}")
         try:
             resp = ds_client.chat.completions.create(
                 model="deepseek-chat",
@@ -74,9 +76,59 @@ def register_handlers(bot: telebot.TeleBot, ds_client: OpenAI):
             # 3) record the assistant reply
             conv_mgr.add_message(chat_id, "assistant", answer)
 
-            bot.send_message(chat_id, answer)
+            MAX_MSG_LEN = 4000
+            for i in range(0, len(answer), MAX_MSG_LEN):
+                bot.send_message(chat_id, answer[i:i + MAX_MSG_LEN])
+
         except Exception as e:
             bot.send_message(chat_id, f"Error: {e}")
+
+    @cmd('chat_wipe', 'Wipe the memory for this chat')
+    def wipe_chat(msg):
+        conv_mgr.clear(msg.chat.id)
+        bot.reply_to(msg, "🧠 Memory wiped for this chat.")
+
+    @cmd('chat_context', 'Show the current conversation context')
+    def chat_context(msg):
+        chat_id = msg.chat.id
+        history = [SYSTEM_PROMPT] + conv_mgr.get_history(chat_id)
+
+        header = f"🧠 Current memory window: *{conv_mgr._histories[chat_id].maxlen} turns*\n"
+        formatted = []
+        for m in history:
+            role = m["role"]
+            content = m["content"]
+            formatted.append(f"*{role.upper()}*:\n{content}")
+
+        full_context = header + "\n\n" + "\n\n".join(formatted)
+
+        MAX_MSG_LEN = 4000
+        for i in range(0, len(full_context), MAX_MSG_LEN):
+            bot.send_message(chat_id, full_context[i:i + MAX_MSG_LEN], parse_mode='Markdown')
+
+    @cmd('chat_range', 'Show the memory range max turns\n/chat_range [<number>] to set it')
+    def chat_range(msg):
+        chat_id = msg.chat.id
+        args = msg.text.split(maxsplit=1)
+
+        with conv_mgr._lock:
+            old_max = conv_mgr._histories[chat_id].maxlen
+
+            if len(args) == 1:
+                return bot.send_message(chat_id, f"🔁 Current memory range: *{old_max} turns*\n `/chat_range <number>` to set a new value", parse_mode='Markdown')
+
+            try:
+                new_max = int(args[1])
+                if new_max < 1 or new_max > 1000:
+                    raise ValueError
+
+                # Replace the old deque with a new one
+                new_deque = deque(conv_mgr._histories[chat_id], maxlen=new_max)
+                conv_mgr._histories[chat_id] = new_deque
+
+                bot.send_message(chat_id, f"✅ Memory range updated:\nOld: *{old_max} turns*\nNew: *{new_max} turns*", parse_mode='Markdown')
+            except ValueError:
+                bot.send_message(chat_id, "❌ Invalid value. Use: `/chat_range 30` (between 1 and 1000)", parse_mode='Markdown')
 
     @cmd('help', 'Show this help message')
     def help_command(msg):
