@@ -1,7 +1,12 @@
 -[x] Error when runing /chat_context, i think when response is too big
 -[ ] Remove and maintain all markdown format from the script for now
 
-- New Instruction class, and InstructionManager
+- New GitInstanceManager
+- @cmd /git_add
+- ...
+
+- New InstructionManager
 - @cmd /instruction_new
 - @cmd /instruction_list
 - @cmd /instruction_wipe
+

@@ -1,0 +1,13 @@
+# add unsable channel
+nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
+nix-channel --update
+
+
+# sheel with newer ollama (for deepseek-r1)
+nix-shell -I nixpkgs=channel:nixpkgs-unstable -p ollama
+
+# serve ollama and run model
+ollama serve &  
+ollama run deepseek-r1
+
+
