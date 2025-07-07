@@ -1,6 +1,10 @@
 -[x] Error when runing /chat_context, i think when response is too big
 -[ ] Remove and maintain all markdown format from the script for now
 
+- Modulate `register_handlers` in to `basic_bud` and `chat_bud` 
+
+- scraping test
+
 - New GitInstanceManager
 - @cmd /git_add
 - ...
@@ -10,3 +14,4 @@
 - @cmd /instruction_list
 - @cmd /instruction_wipe
 
+- "branch reality": data for context in a tree structure of "scene nodes", "characters" are entities with memory of the context they aquiered from the scene they habitated. You can ask "god" for the reality, or you can ask "characters" for their reality.
