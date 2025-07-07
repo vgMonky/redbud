@@ -2,13 +2,25 @@ import os
 import logging
 from dotenv import load_dotenv
 import telebot
+
+# Buds
 import buds.basic as basic_bud
+import buds.chat as chat_bud
 
 class BotApp:
     def __init__(self, token):
         self.bot = telebot.TeleBot(token)
         self.commands = []
         self._buds = []
+
+        @self.cmd('help', 'Show this message')
+        def _help_handler(msg):
+            lines = ["/help - Show this message"]
+            for name, desc in self.commands:
+                if name != "help":  # avoid repeating /help
+                    lines.append(f"/{name} - {desc}")
+            self.bot.reply_to(msg, "\n".join(lines))
+
 
     def cmd(self, name: str, desc: str, **handler_kwargs):
         def decorator(func):
@@ -43,5 +55,6 @@ if __name__ == "__main__":
 
     bot1 = BotApp(TOKEN_1)
     bot1.inject_bud(basic_bud)
+    bot1.inject_bud(chat_bud)
     bot1.run()
 
