@@ -40,19 +40,19 @@ _ai_client = OpenAI(
     base_url="https://api.deepseek.com/v1"
 )
 
-def register(bot):
+def register(botApp):
 
-    @bot.cmd('chat', 'Ask DeepSeek anything: /chat <your question>')
+    @botApp.cmd('chat', 'Ask DeepSeek anything: /chat <your question>')
     def chat(msg):
         chat_id = msg.chat.id
         prompt = msg.text.partition(' ')[2].strip()
         if not prompt:
-            return bot.bot.reply_to(msg, "Usage: /chat <your question>")
+            return botApp.bot.reply_to(msg, "Usage: /chat <your question>")
 
         conv_mgr.add_message(chat_id, "user", prompt)
         history = [SYSTEM_PROMPT] + conv_mgr.get_history(chat_id)
 
-        bot.bot.send_chat_action(chat_id, 'typing')
+        botApp.bot.send_chat_action(chat_id, 'typing')
 
         logging.info(f"[{chat_id}] Prompt: {prompt}")
         try:
@@ -66,18 +66,18 @@ def register(bot):
 
             MAX_MSG_LEN = 4000
             for i in range(0, len(answer), MAX_MSG_LEN):
-                bot.bot.send_message(chat_id, answer[i:i + MAX_MSG_LEN])
+                botApp.bot.send_message(chat_id, answer[i:i + MAX_MSG_LEN])
 
         except Exception as e:
             logging.error(f"Chat error: {e}")
-            bot.bot.send_message(chat_id, f"Error: {e}")
+            botApp.bot.send_message(chat_id, f"Error: {e}")
 
-    @bot.cmd('chat_wipe', 'Wipe the memory for this chat')
+    @botApp.cmd('chat_wipe', 'Wipe the memory for this chat')
     def chat_wipe(msg):
         conv_mgr.clear(msg.chat.id)
-        bot.bot.reply_to(msg, "🧠 Memory wiped for this chat.")
+        botApp.bot.reply_to(msg, "🧠 Memory wiped for this chat.")
 
-    @bot.cmd('chat_context', 'Show the current conversation context')
+    @botApp.cmd('chat_context', 'Show the current conversation context')
     def chat_context(msg):
         chat_id = msg.chat.id
         history = [SYSTEM_PROMPT] + conv_mgr.get_history(chat_id)
@@ -93,9 +93,9 @@ def register(bot):
 
         MAX_MSG_LEN = 4000
         for i in range(0, len(full_context), MAX_MSG_LEN):
-            bot.bot.send_message(chat_id, full_context[i:i + MAX_MSG_LEN])
+            botApp.bot.send_message(chat_id, full_context[i:i + MAX_MSG_LEN])
 
-    @bot.cmd('chat_range', 'Show the memory range max turns\n/chat_range [<number>] to set it')
+    @botApp.cmd('chat_range', 'Show the memory range max turns\n/chat_range [<number>] to set it')
     def chat_range(msg):
         chat_id = msg.chat.id
         args = msg.text.split(maxsplit=1)
@@ -104,7 +104,7 @@ def register(bot):
             old_max = conv_mgr._histories[chat_id].maxlen
 
             if len(args) == 1:
-                return bot.bot.send_message(
+                return botApp.bot.send_message(
                     chat_id,
                     f"🔁 Current memory range: *{old_max} turns*\n `/chat_range <number>` to set a new value",
                     parse_mode='Markdown'
@@ -118,13 +118,13 @@ def register(bot):
                 new_deque = deque(conv_mgr._histories[chat_id], maxlen=new_max)
                 conv_mgr._histories[chat_id] = new_deque
 
-                bot.bot.send_message(
+                botApp.bot.send_message(
                     chat_id,
                     f"✅ Memory range updated:\nOld: *{old_max} turns*\nNew: *{new_max} turns*",
                     parse_mode='Markdown'
                 )
             except ValueError:
-                bot.bot.send_message(
+                botApp.bot.send_message(
                     chat_id,
                     "❌ Invalid value. Use: `/chat_range 30` (between 1 and 1000)",
                     parse_mode='Markdown'
