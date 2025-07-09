@@ -1,7 +1,5 @@
--[x] Error when runing /chat_context, i think when response is too big
--[ ] Remove and maintain all markdown format from the script for now
-
-- Modulate `register_handlers` in to `basic_bud` and `chat_bud` 
+- make BotApp register evry /cmd with telegram's cmd menu
+- make BotApp log for every /cmd
 
 - scraping test
 
