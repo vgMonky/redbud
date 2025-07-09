@@ -6,6 +6,7 @@ import telebot
 # Buds
 import buds.basic as basic_bud
 import buds.chat as chat_bud
+import buds.pm as pm_bud
 
 class BotApp:
     def __init__(self, token):
@@ -56,5 +57,6 @@ if __name__ == "__main__":
     bot1 = BotApp(TOKEN_1)
     bot1.inject_bud(basic_bud)
     bot1.inject_bud(chat_bud)
+    bot1.inject_bud(pm_bud)
     bot1.run()
 
