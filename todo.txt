@@ -1,6 +1,10 @@
 - make BotApp register evry /cmd with telegram's cmd menu
 - make BotApp log for every /cmd
 
+- Basic bud should have on/off /cmds
+
+- add Antiprompt or negative prompt
+
 - scraping test
 
 - New GitInstanceManager

@@ -7,7 +7,8 @@ let
     requests 
     pytelegrambotapi 
     python-dotenv    
-    openai          
+    openai     
+    PyGithub
   ]);
 in
 
