@@ -30,7 +30,8 @@ class ConversationManager:
         with self._lock:
             self._histories.pop(chat_id, None)
 
-conv_mgr = ConversationManager(max_turns=30)
+# ─── chat_bud ────────────────────────────────────────────────────────
+conv_mgr = ConversationManager(max_turns=20)
 SYSTEM_PROMPT = {"role": "system", "content": "You are a helpful assistant that remembers the conversation."}
 
 # Initialize the AI client directly here
