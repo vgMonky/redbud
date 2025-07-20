@@ -2,7 +2,7 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  python = pkgs.python310;
+  python = pkgs.python311;
   pythonEnv = python.withPackages (ps: with ps; [
     requests 
     pytelegrambotapi 
